@@ -338,6 +338,17 @@ function renderTranscript() {
         return;
       current = await saveTranscript();
       dirty = false;
+      const health = await updateHealth();
+      if (health.state === "model_missing")
+        throw Error(
+          `${health.model} is still being installed. Wait for the download to finish, or choose an installed model in Models. Your transcript is saved.`,
+        );
+      if (health.state === "offline")
+        throw Error("Start Ollama, then retry. Your transcript is saved.");
+      if (health.state === "key_missing")
+        throw Error(
+          "Open Models → Cloud and add your API key. Your transcript is saved.",
+        );
       progress(
         "02 / UNDERSTAND · Gemma is checking language, meaning and next steps…",
       );
@@ -699,7 +710,7 @@ async function updateHealth() {
     model_missing: "Ollama connected · model download needed",
     offline: "Start your local Ollama runtime",
     key_configured: "API key configured · test inference",
-    key_missing: "Add GEMINI_API_KEY to .env",
+    key_missing: "Open Models → Cloud to add your API key",
   };
   if ($("#model-state").textContent !== "Live inference verified")
     $("#model-state").textContent = descriptions[health.state];
@@ -713,10 +724,11 @@ async function updateHealth() {
   notice.hidden = ["available", "key_configured"].includes(health.state);
   notice.textContent =
     health.state === "model_missing"
-      ? "Local understanding is waiting for the Gemma model download. You can capture, transcribe and save thoughts now."
+      ? `${health.model} is not installed yet. Wait for the download or choose an installed model in Models. You can still capture, transcribe and save thoughts.`
       : health.state === "offline"
         ? "Local understanding is offline. Start Ollama; your saved recordings and transcripts are still here."
-        : "Understanding needs an API key configured on the server. Recording and local transcription are available.";
+        : "Open Models → Cloud to configure your API key. Recording and local transcription are available.";
+  return health;
 }
 perform(async () => {
   await updateHealth();

@@ -165,3 +165,6 @@ See [docs/DEMO.md](docs/DEMO.md) for the pitch, flow and remaining-day schedule.
 Open **Models** in the workspace to select local Gemma 4 E2B, E4B (default), 12B, 26B, or 31B. Download missing models with the displayed Ollama command. Larger models need more memory.
 
 Choose **Cloud** for hosted Gemma 4 and enter a Google AI Studio API key. Save, then test the connection. Cloud understanding sends transcripts and context to Google; speech transcription remains local. Keys are stored in plaintext in the ignored `data/model-settings.json`, never returned by settings endpoints or stored in browser storage. Blank key keeps the saved key; Remove saved key also disables the environment fallback. Preferences override `.env`; remove the settings file to return to environment configuration. Model changes are blocked during processing.
+
+### Appearance settings
+The cover and workspace default to neon green on dark black. Open **Settings** on either page to choose Neon green, Glacier (cyan), After hours (violet), Golden hour (amber), or Graphite. Light/dark mode and palette choices apply immediately and are saved in your browser.

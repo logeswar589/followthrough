@@ -47,9 +47,19 @@ async def generate(prompt, schema=None):
             if not text.strip():
                 raise ValueError('Gemma returned no text. Try again with a shorter transcript.')
             return text
-        response = await client.post(os.getenv('OLLAMA_URL', 'http://127.0.0.1:11434').rstrip('/') + '/api/chat',
+        runtime = os.getenv('OLLAMA_URL', 'http://127.0.0.1:11434').rstrip('/')
+        try:
+            installed = await client.get(runtime + '/api/tags')
+            installed.raise_for_status()
+        except httpx.HTTPError as exc:
+            raise ValueError('Ollama is not reachable. Start Ollama, then test the connection in Models.') from exc
+        if not any(m.get('name') == model or m.get('model') == model for m in installed.json().get('models', [])):
+            raise ValueError(f'{model} is not installed yet. Wait for its download to finish, or open Models and select an installed Gemma model. Your transcript is saved.')
+        response = await client.post(runtime + '/api/chat',
             json={'model': model, 'stream': False, 'format': schema or 'json', 'think': os.getenv('OLLAMA_THINK', 'true').lower() == 'true',
                   'messages': [{'role': 'user', 'content': prompt}], 'options': {'temperature': 0.1, 'num_ctx': 8192, 'num_predict': 6000}})
+        if response.status_code == 404:
+            raise ValueError(f'{model} is not available in Ollama. Open Models and check its installation before retrying. Your transcript is saved.')
         if response.status_code != 200:
             raise ValueError(f'Local Gemma returned HTTP {response.status_code}. Pull the configured model first.')
         text = response.json()['message']['content']
