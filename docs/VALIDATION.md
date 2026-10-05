@@ -70,10 +70,12 @@ Initial live runs failed on dropped fields and ambiguity. Prompt refinements plu
 - 45 automated checks passed; 2 opt-in ASR checks skipped.
 - Browser checks passed for E4B default, slider selection, cloud form, key clearing, no credential in browser storage, mobile layout and dark theme. Browser save requests were mocked to preserve real settings.
 - Server tests cover secret-free responses, key retention/removal, catalog validation, processing lock and cross-origin rejection.
-- E4B is configured and downloading. Live E4B inference remains unverified until the download finishes. Cloud inference requires a user-supplied API key.
+- E4B finished downloading and passed a live `/api/model/check` request on 5 October 2026: HTTP 200, model `gemma4:e4b`, valid JSON `{"ok":true}`. The cold connection test took 50.8 seconds. This verifies inference access, not a full E4B semantic benchmark. Cloud inference requires a user-supplied API key.
 
 
 ## Model availability fix
 - 49 automated tests passed; 2 opt-in ASR checks skipped.
 - Local inference checks Ollama model installation before sending a chat request. Missing/offline runtimes and a model removed after the check produce actionable messages. No automatic model substitution.
 - Browser regression verifies the model-specific notice, helpful missing-model toast, and notice disappearing once health reports the model installed.
+
+- The neon/black palette and settings were checked in desktop and mobile browsers: five selectable schemes, light/dark switching, persistence across reloads/pages, and no page errors.
