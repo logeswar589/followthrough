@@ -1,0 +1,17 @@
+.env
+.venv/
+data/
+__pycache__/
+.pytest_cache/
+node_modules/
+artifacts/
+*.pyc
+
+# Local credentials and personal recordings
+.env.*
+!.env.example
+*.pem
+*.key
+*.sqlite3
+*.sqlite3-*
+model-settings.json

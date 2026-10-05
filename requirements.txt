@@ -1,0 +1,10 @@
+fastapi>=0.115,<1
+uvicorn>=0.34,<1
+python-multipart>=0.0.20,<1
+python-dotenv>=1.0,<2
+httpx>=0.28,<1
+pydantic>=2.10,<3
+faster-whisper>=1.1,<2
+av>=16,<17
+tzdata>=2025.1
+pytest>=8,<10

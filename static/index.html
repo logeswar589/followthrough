@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>FollowThrough — From said to done</title>
+    <script src="/theme.js"></script>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <aside class="sidebar">
+      <a class="brand" href="/welcome.html"
+        ><span class="brandmark">↗</span> followthrough<span class="branddot"
+          >.</span
+        ></a
+      >
+      <button class="primary new" id="new"><span>＋</span> New thought</button>
+      <div class="appearance-controls">
+        <a href="/welcome.html">↗ Welcome</a
+        ><button class="theme-toggle" data-theme-toggle>Theme</button
+        ><button id="openModels" class="theme-toggle">Models</button>
+      </div>
+      <div class="section-label">YOUR SPACE</div>
+      <button class="nav active" id="inboxNav">
+        <span>▤</span> My tasks <b id="count">0</b>
+      </button>
+      <div class="conversation-column">
+        <div class="list-heading">
+          <h2>History <span id="list-count">0</span></h2>
+        </div>
+        <input
+          class="search"
+          id="search"
+          placeholder="Search thoughts, tasks, names…"
+          aria-label="Search conversations"
+        />
+        <div id="conversations"></div>
+      </div>
+      <div class="model-panel">
+        <div class="section-label">UNDERSTANDING ENGINE</div>
+        <div>
+          <span class="status-dot"></span>
+          <strong id="model-name">Gemma 4</strong>
+        </div>
+        <p id="model-state">Checking configuration…</p>
+        <button class="text-button" id="checkModel">Test connection ↗</button>
+      </div>
+      <div class="profile">
+        <span>FT</span>
+        <div>Your personal workspace<small>Stored on this device</small></div>
+      </div>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <span class="breadcrumb">Workspace</span
+          ><span class="slash">/</span> My tasks
+        </div>
+        <span class="local-badge">◉ &nbsp; Review before action</span>
+      </header>
+      <div id="toast" role="status" aria-live="polite"></div>
+      <section class="page-heading">
+        <div>
+          <div class="eyebrow">FROM SAID TO DONE</div>
+          <h1>Make room for<br />getting it done<span>.</span></h1>
+          <p>Your next steps, deadlines and a little breathing room.</p>
+        </div>
+        <div class="heading-art" aria-hidden="true">
+          <span class="orbit one"></span><span class="orbit two"></span
+          ><span class="art-arrow">↗</span><i>✳</i>
+        </div>
+      </section>
+      <section id="taskWorkspace" class="task-workspace">
+        <div class="task-heading">
+          <div>
+            <span class="eyebrow">ONE THING AT A TIME</span>
+            <h2>My tasks <span id="remainingCount"></span></h2>
+          </div>
+          <span id="taskProgress" class="hint"></span>
+        </div>
+        <div id="taskStats" class="task-stats"></div>
+        <form id="quickTask" class="quick-task">
+          <input
+            id="quickTitle"
+            maxlength="200"
+            required
+            placeholder="＋ Add something to follow through on…"
+            aria-label="New task title"
+          /><input
+            id="quickDeadline"
+            type="datetime-local"
+            aria-label="New task deadline"
+          /><button class="primary">Add task</button>
+        </form>
+        <div class="task-controls">
+          <div class="task-filters" role="group" aria-label="Task filter">
+            <button class="active" data-filter="remaining">Remaining</button
+            ><button data-filter="today">Today</button
+            ><button data-filter="overdue">Overdue</button
+            ><button data-filter="completed">Completed</button>
+          </div>
+          <label class="hint"
+            ><input type="checkbox" id="includeSamples" /> Include demo
+            examples</label
+          >
+        </div>
+        <p class="hint">
+          Deadlines use your device timezone. Countdown timers update while this
+          page is open.
+        </p>
+        <div class="task-utilities">
+          <button id="enableNotifications" class="secondary">
+            Enable desktop alerts</button
+          ><button id="deleteAllTasks" class="text-button">
+            Delete all tasks…
+          </button>
+        </div>
+        <p class="hint" id="notificationStatus">
+          In-app reminders work while this page is open. Closed tabs and
+          sleeping devices cannot deliver alerts.
+        </p>
+        <details id="notificationTray">
+          <summary>Notifications <span id="notificationCount">0</span></summary>
+          <div id="notificationList"></div>
+          <button id="dismissNotifications" class="text-button">
+            Dismiss current notifications
+          </button>
+        </details>
+        <p class="hint">
+          Google Calendar is available on confirmed events. If details are
+          missing, use “Review for Calendar” first.
+        </p>
+        <div id="taskRows"></div>
+      </section>
+      <section class="capture card" id="capture">
+        <div class="capture-title">
+          <div class="capture-icon">≋</div>
+          <div>
+            <h2>What’s on your mind?</h2>
+            <p>A quick thought, a voice note, a conversation worth keeping.</p>
+          </div>
+          <span class="step-label">01 / CAPTURE</span>
+        </div>
+        <div class="capture-body">
+          <div>
+            <label class="consent"
+              ><input type="checkbox" id="consent" /> Everyone being recorded
+              knows and agrees.</label
+            >
+            <div class="capture-controls">
+              <button id="record" class="primary">
+                <span class="mic">●</span> Start recording</button
+              ><span class="or">or</span
+              ><label class="upload-button" for="upload"
+                >↥ &nbsp; Upload audio</label
+              ><input
+                type="file"
+                id="upload"
+                accept="audio/*,.mp4,.webm"
+                hidden
+              /><button class="text-button" id="write">Type a thought →</button>
+            </div>
+            <p class="fine">
+              WAV, MP3, M4A, OGG, WebM, MP4 or FLAC · up to 30 MB / 10 minutes
+            </p>
+          </div>
+          <div class="waveform" aria-hidden="true"></div>
+        </div>
+        <div id="recordingState" class="recording-state" hidden>
+          ● Recording <strong id="timer">00:00</strong> · Tap stop when you’re
+          done
+        </div>
+      </section>
+      <section class="workspace-grid">
+        <section id="detail" class="detail card" hidden>
+          <div class="empty-detail">
+            <div class="empty-symbol">↗</div>
+            <span class="eyebrow">LESS FRICTION. MORE FOLLOW-THROUGH.</span>
+            <h2>Your next step starts<br />with a thought.</h2>
+            <p>
+              Record or upload something, then review the transcript.<br />Gemma
+              turns it into a recap and actions you control.
+            </p>
+            <div class="journey">
+              <span>01 <b>Capture</b></span
+              ><i>→</i><span>02 <b>Understand</b></span
+              ><i>→</i><span>03 <b>Follow through</b></span>
+            </div>
+            <button id="example" class="secondary">
+              Try the example transcript ↗</button
+            ><small
+              >Sample text only. Understanding runs live on your selected Gemma
+              model.</small
+            >
+          </div>
+        </section>
+      </section>
+      <footer>
+        Made for the things you meant to do.<span
+          >FollowThrough / Hack Day 2026</span
+        >
+      </footer>
+    </main>
+    <dialog id="modelDialog" aria-labelledby="modelDialogTitle">
+      <form id="modelForm">
+        <div class="dialog-heading">
+          <h2 id="modelDialogTitle">Your understanding engine</h2>
+          <button
+            type="button"
+            id="closeModels"
+            aria-label="Close model settings"
+          >
+            ×
+          </button>
+        </div>
+        <p>
+          Choose the Gemma model that fits your device or connect to the cloud.
+        </p>
+        <div class="model-modes">
+          <label
+            ><input type="radio" name="provider" value="ollama" checked />
+            Local</label
+          ><label
+            ><input type="radio" name="provider" value="google" /> Cloud</label
+          >
+        </div>
+        <section id="localModelOptions">
+          <label for="modelSlider">Local Gemma model</label>
+          <h3 id="selectedModelLabel"></h3>
+          <input
+            id="modelSlider"
+            type="range"
+            min="0"
+            max="4"
+            step="1"
+            value="1"
+            aria-describedby="modelHint"
+          />
+          <div class="model-scale" aria-hidden="true">
+            <span>E2B</span><span>E4B</span><span>12B</span><span>26B</span
+            ><span>31B</span>
+          </div>
+          <p id="modelHint"></p>
+          <p id="modelInstalled" role="status"></p>
+          <code id="modelPull"></code>
+          <p class="model-fineprint">
+            Missing models must be downloaded in your terminal. Moving the
+            slider does not download anything.
+          </p>
+        </section>
+        <section id="cloudModelOptions" hidden>
+          <label for="cloudModel">Hosted Gemma model</label
+          ><select id="cloudModel"></select>
+          <label for="cloudKey">Google AI Studio API key</label
+          ><input
+            id="cloudKey"
+            type="password"
+            autocomplete="off"
+            spellcheck="false"
+            placeholder="Enter API key"
+          />
+          <p id="cloudKeyStatus"></p>
+          <label
+            ><input type="checkbox" id="clearCloudKey" /> Remove saved
+            key</label
+          >
+          <p class="model-fineprint">
+            Cloud understanding sends transcripts and context to Google. Audio
+            transcription stays local. Your key is saved on this device in an
+            unencrypted, Git-ignored settings file; never in browser storage.
+          </p>
+          <a
+            href="https://aistudio.google.com/apikey"
+            target="_blank"
+            rel="noopener noreferrer"
+            >Get an API key ↗</a
+          >
+        </section>
+        <p id="modelSaveStatus" role="status" aria-live="polite"></p>
+        <div class="dialog-footer">
+          <button type="button" id="testSelectedModel">
+            Test saved connection</button
+          ><button class="primary" type="submit" id="saveModels">
+            Save model
+          </button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="planDialog">
+      <form id="planForm">
+        <div class="dialog-heading">
+          <h2>Plan this task</h2>
+          <button
+            type="button"
+            id="closePlan"
+            class="icon-button"
+            aria-label="Close task planner"
+          >
+            ×
+          </button>
+        </div>
+        <p id="planTitle"></p>
+        <label class="field"
+          ><span>Deadline (your device timezone)</span
+          ><input id="planDeadline" type="datetime-local" /></label
+        ><label class="field"
+          ><span>Priority</span
+          ><select id="planPriority">
+            <option value="normal">Normal</option>
+            <option value="high">High</option>
+            <option value="low">Low</option>
+          </select></label
+        >
+        <p class="hint">
+          Leave the deadline empty to remove the timer. Ready tasks appear in
+          Notifications when due while this page is open.
+        </p>
+        <div class="dialog-footer">
+          <button type="button" id="clearDeadline" class="secondary">
+            Clear deadline</button
+          ><button class="primary">Save plan</button>
+        </div>
+      </form>
+    </dialog>
+    <dialog id="calendarDialog">
+      <div class="dialog-heading">
+        <h2>Review Google Calendar event</h2>
+        <button
+          id="closeCalendar"
+          class="icon-button"
+          aria-label="Close calendar preview"
+        >
+          ×
+        </button>
+      </div>
+      <div id="calendarPreview"></div>
+      <p class="hint">
+        Event details will be sent to Google when you open the link. Check the
+        event and notification settings, then press Save in Google Calendar. No
+        account sync is connected.
+      </p>
+      <a
+        id="openGoogle"
+        class="primary"
+        target="_blank"
+        rel="noopener noreferrer"
+        >Open in Google Calendar ↗</a
+      >
+    </dialog>
+    <dialog id="actionDialog">
+      <form id="actionForm">
+        <div class="dialog-heading">
+          <div>
+            <span class="eyebrow">YOUR CALL</span>
+            <h2>Review this action</h2>
+          </div>
+          <button
+            type="button"
+            id="closeDialog"
+            class="icon-button"
+            aria-label="Close"
+          >
+            ×
+          </button>
+        </div>
+        <div id="actionFields"></div>
+        <label class="consent review-consent"
+          ><input type="checkbox" id="resolve" /> I’ve reviewed the evidence and
+          resolved the questions above.</label
+        >
+        <div class="dialog-footer">
+          <button type="button" id="cancelDialog" class="secondary">
+            Cancel</button
+          ><button class="primary" type="submit">Save reviewed action</button>
+        </div>
+      </form>
+    </dialog>
+  </body>
+</html>
